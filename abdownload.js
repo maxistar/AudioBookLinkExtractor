@@ -116,6 +116,16 @@ if (domain === 'audio-books.club') {
             request.send();
         }
     });
+} else if (domain === 'baza-knig.ru') {
+    let links; //the global list already on the page
+    eval("links = " + file)
+
+    let result = "";
+    for (let link of links) {
+        result = result.concat("wget ").concat(" --user-agent=\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\" --referer \"https://baza-knig.ru/\" \"").concat(link.file).concat("\"\n");
+    }
+    // alert(result);
+    createAlert(result);
 } else {
     alert("The Domain ".concat(domain).concat(" is not supported!"));
 }
