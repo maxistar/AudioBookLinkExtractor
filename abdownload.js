@@ -11,12 +11,15 @@ function createAlert(text) {
     textarea.style.left = '0';
 
     const parentDiv = document.createElement('div');
-    parentDiv.style.width = '100%';
-    parentDiv.style.height = '100%';
-    parentDiv.style.top = '0';
-    parentDiv.style.left = '0';
-    parentDiv.style.position = 'absolute';
-    parentDiv.style.zIndex = '1000';
+    parentDiv.style.width = '80%';
+    parentDiv.style.height = '80%';
+    parentDiv.style.top = '10%';
+    parentDiv.style.left = '10%';
+    parentDiv.style.padding = '2px';
+    parentDiv.style.position = 'fixed';
+    parentDiv.style.zIndex = '10000';
+    parentDiv.style.backgroundColor = 'blue';
+    parentDiv.style.backgroundSize = '1px';
     parentDiv.appendChild(textarea);
     document.body.appendChild(parentDiv);
 }
@@ -62,7 +65,7 @@ if (domain === 'audio-books.club') {
 
             const fileUrl = newScript2.substr(newScript2.indexOf('file:"') + 6);
             const fileUrl2 = fileUrl.substr(0, fileUrl.length - 2);
-            var request = new XMLHttpRequest();
+            const request = new XMLHttpRequest();
             request.open('GET', fileUrl2);
             request.responseType = 'text';
 
@@ -95,9 +98,10 @@ if (domain === 'audio-books.club') {
         if (start !== -1) {
             const newScript = scriptText.substr(start + 26);
             const newScript2 = newScript.substr(0, newScript.indexOf(');'));
-            eval('var links = ' + newScript2);
+            let links = [];
+            eval('links = ' + newScript2);
 
-            var request = new XMLHttpRequest();
+            const request = new XMLHttpRequest();
             request.open('GET', links.file);
             request.responseType = 'text';
 
@@ -107,7 +111,6 @@ if (domain === 'audio-books.club') {
                 let counter = 1;
                 for (let link of links) {
                     const linksParts = link.file.split(" or ");
-                    const filename = "".concat(pad(counter++, 5)).concat(".mp3");
                     result = result.concat("wget ").concat(" --user-agent=\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\" --referer \"https://vse-audioknigi.com/\" \"").concat(linksParts[0]).concat("\"\n");
                 }
                 createAlert(result);
@@ -117,14 +120,12 @@ if (domain === 'audio-books.club') {
         }
     });
 } else if (domain === 'baza-knig.ru') {
-    let links; //the global list already on the page
-    eval("links = " + file)
-
+    let links = []; //the global list already on the page
+    eval("links = " + file1);
     let result = "";
     for (let link of links) {
         result = result.concat("wget ").concat(" --user-agent=\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\" --referer \"https://baza-knig.ru/\" \"").concat(link.file).concat("\"\n");
     }
-    // alert(result);
     createAlert(result);
 } else {
     alert("The Domain ".concat(domain).concat(" is not supported!"));
